@@ -3,12 +3,56 @@
            https://api.github.com/users/<your name>
 */
 
+
+
 /* Step 2: Inspect and study the data coming back, this is YOUR 
    github info! You will need to understand the structure of this 
    data in order to use it to build your component function 
 
    Skip to Step 3.
 */
+
+const gitCard = (data) => {
+  const newCard = document.createElement('div');
+  const newImage = document.createElement('img');
+  const newCardInfo = document.createElement('div');
+  const name = document.createElement('h3');
+  const userName = document.createElement('p');
+  const location = document.createElement('p');
+  const profile = document.createElement('p');
+  const profileUrl = document.createElement('a');
+  const followers = document.createElement('p');
+  const following = document.createElement('p');
+  const bio = document.createElement('p');
+
+  newImage.src = data.avatar_url;
+  name.textContent = data.login;
+  userName.textContent = data.login;
+  location.textContent = `Location: ${data.location}`;
+  profile.textContent = `Profile: ${data.name}`;
+  profileUrl.textContent = `Link: ${data.html_url}`;
+  followers.textContent = `Followers: ${data.followers}`;
+  following.textContent = `Following: ${data.following}`;
+  bio.textContent = `Bio: ${data.bio}`;
+
+  newCard.appendChild(newImage);
+  newCard.appendChild(newCardInfo);
+  newCardInfo.appendChild(name);
+  newCardInfo.appendChild(location);
+  newCardInfo.appendChild(profile);
+  newCardInfo.appendChild(followers);
+  newCardInfo.appendChild(following);
+  newCardInfo.appendChild(bio);
+  newCardInfo.appendChild(profileUrl);
+
+  newCard.classList.add("card");
+  newCardInfo.classList.add("card-info");
+  name.classList.add("name");
+  userName.classList.add("username");
+
+  return newCard;
+}
+
 
 /* Step 4: Pass the data received from Github into your function, 
            create a new component and add it to the DOM as a child of .cards
@@ -24,7 +68,41 @@
           user, and adding that card to the DOM.
 */
 
-const followersArray = [];
+
+
+const entryPoint = document.querySelector(".cards");
+
+axios.get('https://api.github.com/users/Heart8reak')
+  .then(response => {
+    console.log(response);
+    entryPoint.appendChild(gitCard(response.data));
+  })
+
+  .catch(error => {
+    console.log("The data was not returned", error);
+  })
+
+const followersArray = [
+  'adrianbparra',
+  'Catherinesjkim',
+  'julieantonio',
+  'bkoehler2016',
+  'kjdschneider'
+];
+
+followersArray.forEach((follower) => {
+  axios.get(`https://api.github.com/users/${follower}`)
+    .then(response => {
+      console.log(response.data);
+      entryPoint.appendChild(gitCard(response.data));
+    })
+
+    .catch(error => {
+      console.log("The data was not returned", error);
+    })
+})
+
+
 
 /* Step 3: Create a function that accepts a single object as its only argument,
           Using DOM methods and properties, create a component that will return the following DOM element:
@@ -35,7 +113,7 @@ const followersArray = [];
     <h3 class="name">{users name}</h3>
     <p class="username">{users user name}</p>
     <p>Location: {users location}</p>
-    <p>Profile:  
+    <p>Profile:
       <a href={address to users github page}>{address to users github page}</a>
     </p>
     <p>Followers: {users followers count}</p>
@@ -46,7 +124,9 @@ const followersArray = [];
 
 */
 
-/* List of LS Instructors Github username's: 
+
+
+/* List of LS Instructors Github username's:
   tetondan
   dustinmyers
   justsml
